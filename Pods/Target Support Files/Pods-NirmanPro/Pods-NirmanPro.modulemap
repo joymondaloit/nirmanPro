@@ -1,0 +1,6 @@
+framework module Pods_NirmanPro {
+  umbrella header "Pods-NirmanPro-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,54 @@
+PODS:
+  - Alamofire (5.2.1)
+  - Cosmos (22.1.0)
+  - DatePickerDialog (3.0)
+  - DropDown (2.3.13)
+  - IQKeyboardManagerSwift (6.5.5)
+  - KYDrawerController (2.1.0)
+  - ObjectMapper (4.2.0)
+  - SDWebImage (5.0.6):
+    - SDWebImage/Core (= 5.0.6)
+  - SDWebImage/Core (5.0.6)
+  - SVProgressHUD (2.2.5)
+  - SwiftyJSON (5.0.0)
+
+DEPENDENCIES:
+  - Alamofire
+  - Cosmos
+  - DatePickerDialog
+  - DropDown (= 2.3.13)
+  - IQKeyboardManagerSwift
+  - KYDrawerController
+  - ObjectMapper
+  - SDWebImage (~> 5.0.6)
+  - SVProgressHUD
+  - SwiftyJSON
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - Cosmos
+    - DatePickerDialog
+    - DropDown
+    - IQKeyboardManagerSwift
+    - KYDrawerController
+    - ObjectMapper
+    - SDWebImage
+    - SVProgressHUD
+    - SwiftyJSON
+
+SPEC CHECKSUMS:
+  Alamofire: e911732990610fe89af59ac0077f923d72dc3dfd
+  Cosmos: 2795b36ad4bbea1af3050d6d65576ed63875f86a
+  DatePickerDialog: 03dbb8350bfa80302ab2a8c83cee1fec70184444
+  DropDown: 8a2116376c1981888557f72ec2ffc9a5e0e456ec
+  IQKeyboardManagerSwift: 0fb93310284665245591f50f7a5e38de615960b7
+  KYDrawerController: baad0e63b09c0cb564bd48f0f7f70f45d9176ebc
+  ObjectMapper: 1eb41f610210777375fa806bf161dc39fb832b81
+  SDWebImage: 920f1a2ff1ca8296ad34f6e0510a1ef1d70ac965
+  SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
+  SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
+
+PODFILE CHECKSUM: 39a1cd5cb627086661337888219571ccc527050d
+
+COCOAPODS: 1.9.1
