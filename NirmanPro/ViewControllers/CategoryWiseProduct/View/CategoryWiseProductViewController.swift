@@ -57,6 +57,11 @@ extension CategoryWiseProductViewController : UICollectionViewDataSource,UIColle
         let height = 286
         return CGSize(width: CGFloat(width), height: CGFloat(height))
     }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let productVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ProductDetailsViewController") as! ProductDetailsViewController
+        productVC.productID = categoryArr[indexPath.row].productId
+        self.navigationController?.pushViewController(productVC, animated: true)
+    }
 
 }
 //MARK:- Api Call

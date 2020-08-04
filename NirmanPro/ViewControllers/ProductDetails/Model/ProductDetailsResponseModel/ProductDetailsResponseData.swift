@@ -20,7 +20,7 @@ class ProductDetailsResponseData : NSObject, NSCoding, Mappable{
 	var productSpecialPrice : String?
 	var productWeight : String?
 	var relatedProduct : [ProductDetailsRelatedProduct]?
-
+    var productWishlist : Int?
 
 	class func newInstance(map: Map) -> Mappable?{
 		return ProductDetailsResponseData()
@@ -42,7 +42,8 @@ class ProductDetailsResponseData : NSObject, NSCoding, Mappable{
 		productSpecialPrice <- map["product_special_price"]
 		productWeight <- map["product_weight"]
 		relatedProduct <- map["related_product"]
-		
+        productWishlist <- map["product_wishlist"]
+        
 	}
 
     /**
@@ -64,6 +65,8 @@ class ProductDetailsResponseData : NSObject, NSCoding, Mappable{
          productWeight = aDecoder.decodeObject(forKey: "product_weight") as? String
          relatedProduct = aDecoder.decodeObject(forKey: "related_product") as? [ProductDetailsRelatedProduct]
 
+        productWishlist = aDecoder.decodeObject(forKey: "product_wishlist") as? Int
+     
 	}
 
     /**
@@ -108,6 +111,9 @@ class ProductDetailsResponseData : NSObject, NSCoding, Mappable{
 		if relatedProduct != nil{
 			aCoder.encode(relatedProduct, forKey: "related_product")
 		}
+        if productWishlist != nil{
+            aCoder.encode(productWishlist, forKey: "product_wishlist")
+        }
 
 	}
 

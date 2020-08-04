@@ -83,6 +83,10 @@ class OTPViewController: UIViewController {
         }
     }
     
+    @IBAction func resendOtpAction(_ sender: Any) {
+        self.sendOTP(mobile: self.phoneNumber!)
+    }
+    
 }
 //MARK:- TextField Delegates:-
 extension OTPViewController: UITextFieldDelegate{
@@ -142,4 +146,26 @@ func verifyOTP(){
         }
     }
 }
+    func sendOTP(mobile : String){
+        SVProgressHUD.show()
+        let apiName = DEV_BASE_URL+"login/otp_send"
+        let param :[String:Any] = ["mobile" : mobile]
+        AlamofireManager.sharedInstance.postRequest(apiname: apiName, params: param, vc: self) { (response, error) in
+            SVProgressHUD.dismiss()
+            if let error = error{
+                Utils.showAlert(alert: "", message: error.localizedDescription, vc: self)
+            }else{
+                if let response = response{
+                    if response["responseCode"] as! Int == 1{
+                       if let otp = response["responseData"] as? String{
+                        self.OTPString = otp
+                        self.setOTPIntoFields()
+                        }
+                    }else{
+                        Utils.showAlert(alert: "", message: response["responseText"] as! String, vc: self)
+                    }
+                }
+            }
+        }
+    }
 }

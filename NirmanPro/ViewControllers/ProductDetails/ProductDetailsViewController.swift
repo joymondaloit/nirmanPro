@@ -24,11 +24,13 @@ class ProductDetailsViewController: UIViewController {
     @IBOutlet weak var tileSizeLbl: UILabel!
     @IBOutlet weak var avgWaitPerCartoon: UILabel!
     @IBOutlet weak var releatedProductCollectionView: UICollectionView!
+     @IBOutlet weak var wishlistImg: UIImageView!
     var relatedProductsArr = [ProductDetailsRelatedProduct]()
     var productImgArr = [ProductDetailsProductImage]()
-    var totalQuantity = Int()
+    var totalQuantity = 1
     var productID : String?
     var customerID : String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -44,14 +46,33 @@ class ProductDetailsViewController: UIViewController {
 //MARK:- @IBActions:-
     
     @IBAction func itemMinusAction(_ sender: Any) {
+        if totalQuantity != 1{
+            self.totalQuantity = self.totalQuantity - 1
+            if totalQuantity < 10{
+              self.productCountLbl.text = "0\(self.totalQuantity)"
+            }else{
+               self.productCountLbl.text = "\(self.totalQuantity)"
+            }
+            
+        }
     }
     @IBAction func itemPlusAction(_ sender: Any) {
+        self.totalQuantity = self.totalQuantity + 1
+        if totalQuantity < 10{
+            self.productCountLbl.text = "0\(self.totalQuantity)"
+        }else{
+            self.productCountLbl.text = "\(self.totalQuantity)"
+        }
     }
     @IBAction func writeReviewBtnAction(_ sender: Any) {
     }
     
     @IBAction func productDescriptionBtnAction(_ sender: Any) {
     }
+    
+    @IBAction func backAction(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+       }
     @IBAction func addToCartAction(_ sender: Any) {
         if Utils.getUserID() != ""{
             self.addToCart(productID: self.productID!, quantity: self.totalQuantity, actionType: 1)
@@ -77,7 +98,13 @@ class ProductDetailsViewController: UIViewController {
       */
      @objc func relatedProductAddToWishlistAction(sender : UIButton){
         if Utils.getUserID() != ""{
-            Utils.showAlertWithCallback(alert: "", message: "Are you sure want to wishlist this item?", vc: self) {
+            var message = ""
+            if relatedProductsArr[sender.tag].productWishlist! == 1{
+                message = "Remove from your wishlist?"
+            }else{
+                message = "Are you sure want to wishlist this item?"
+            }
+            Utils.showAlertWithCallback(alert: "", message: message, vc: self) {
                 guard let productID = self.relatedProductsArr[sender.tag].productId else {return}
                 self.addToWishlist(productID: productID)
             }
@@ -146,21 +173,27 @@ extension ProductDetailsViewController: UICollectionViewDelegate,UICollectionVie
             if let rating = data.productRating{
                 relatedCell.rating.rating = Double(rating)
             }
-            if let actualPrice = data.productPrice{
-                if actualPrice != ""{
-                    relatedCell.actualPriceLbl.attributedText = actualPrice.strikeThrough()
-                    
-                }else{
-                    relatedCell.actualPriceLbl.text = "₹0/sq.ft"
-                    
-                }
-            }
             if let specialPrice = data.productSpecialPrice{
                 if specialPrice != ""{
-                    relatedCell.specialPriceLbl.text = "₹\(specialPrice)"
-                    
+                    relatedCell.actualPriceLbl.isHidden = false
+                    if let actualPrice = data.productPrice{
+                        relatedCell.actualPriceLbl.attributedText = actualPrice.strikeThrough()
+                    }
+                    relatedCell.specialPriceLbl.text = specialPrice
                 }else{
-                    relatedCell.specialPriceLbl.text = "₹0/sq.ft"
+                    if let actualPrice = data.productPrice{
+                        relatedCell.specialPriceLbl.text = "₹\(actualPrice)"
+                    }
+                    relatedCell.actualPriceLbl.isHidden = true
+                    relatedCell.actualPriceLbl.text = ""
+                }
+            }
+            if let isProductWishlisted = data.productWishlist{
+                if isProductWishlisted == 1{
+                    relatedCell.wislistImg.image = UIImage.init(named: "heartFull")
+                }else{
+                    relatedCell.wislistImg.image = UIImage.init(named: "heart-pop")
+                    
                 }
             }
             relatedCell.addToCartBtn.tag = indexPath.row
@@ -181,6 +214,7 @@ extension ProductDetailsViewController: UICollectionViewDelegate,UICollectionVie
 }
 extension ProductDetailsViewController{
     func getProductDetails(){
+        SVProgressHUD.show()
         let api = DEV_BASE_URL+"product/product_details"
         let param :[String:Any] = ["product_id" : self.productID!,"customer_id": self.customerID!]
         ProductDetailsViewModel.shared.getProductDetails(apiName: api, param: param, vc: self) { (response, error) in
@@ -244,6 +278,20 @@ extension ProductDetailsViewController{
         if let reviewCount = data.productReview{
             self.ratingCountLbl.text = "(\(reviewCount) review)"
         }
+        if let productWeight = data.productWeight{
+            self.avgWaitPerCartoon.text = productWeight
+        }
+        if let size = data.productSize{
+            self.tileSizeLbl.text = size
+        }
+        if let isProductWishlisted = data.productWishlist{
+            if isProductWishlisted == 1{
+                self.wishlistImg.image = UIImage.init(named: "heartFull")
+            }else{
+                self.wishlistImg.image = UIImage.init(named: "heart-pop")
+                
+            }
+        }
         
     }
     func addToWishlist(productID : String){
@@ -258,7 +306,7 @@ extension ProductDetailsViewController{
                 if let response = response{
                     if response["responseCode"] as! Int == 1{
                         Utils.showAlertWithCallbackOneAction(alert: "", message: response["responseText"] as! String, vc: self, completion: {
-                            
+                            self.getProductDetails()
                             
                         })
                     }else{

@@ -16,4 +16,5 @@ class RelatedProductsItemCell: UICollectionViewCell {
        @IBOutlet weak var specialPriceLbl : UILabel!
        @IBOutlet weak var addToCartBtn : UIButton!
        @IBOutlet weak var wislistBtn : UIButton!
+     @IBOutlet weak var wislistImg : UIImageView!
 }

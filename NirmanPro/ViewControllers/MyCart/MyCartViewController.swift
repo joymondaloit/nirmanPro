@@ -60,26 +60,27 @@ extension MyCartViewController : UITableViewDataSource,UITableViewDelegate{
                 
             }
         }
-        if let actualPrice = data.productPrice{
-            if actualPrice != ""{
-                cell.mrpPrice.attributedText = actualPrice.strikeThrough()
-                
-            }else{
-                cell.mrpPrice.text = "₹0/sq.ft"
-                
-            }
-        }
         if let specialPrice = data.productSpecialPrice{
             if specialPrice != ""{
-                cell.actualPrice.text = "₹\(specialPrice)"
-                
+                cell.mrpPrice.isHidden = false
+                if let actualPrice = data.productPrice{
+                    cell.mrpPrice.attributedText = actualPrice.strikeThrough()
+                }
+                cell.actualPrice.text = specialPrice
             }else{
-                cell.actualPrice.text = "₹0/sq.ft"
+                if let actualPrice = data.productPrice{
+                    cell.actualPrice.text = "₹\(actualPrice)"
+                }
+                cell.mrpPrice.isHidden = true
+                cell.mrpPrice.text = ""
             }
         }
+
         if let totalItem = data.productQuantity{
             cell.itemCountLbl.text = totalItem
         }
+        cell.deleteItemBtn.tag = indexPath.row
+        cell.deleteItemBtn.addTarget(self, action: #selector(deleteCartItemAction), for: .touchUpInside)
         return cell
     }
     
@@ -102,6 +103,7 @@ extension MyCartViewController {
                             if cartItems.count != 0{
                                 self.cartItemsArr = cartItems
                                 self.myCartTableView.reloadData()
+
                             }else{
                                 
                             }
@@ -112,6 +114,30 @@ extension MyCartViewController {
                 }
             }
             
+        }
+    }
+    
+    @objc func deleteCartItemAction(sender : UIButton){
+        Utils.showAlertWithCallback(alert: "", message: "Are you sure you want to remove this item from cart?", vc: self) {
+            let apiName = DEV_BASE_URL+"cart/cart_delete"
+            let param :[String:Any] = ["user_id":Utils.getUserID(),
+                                       "cart_id":self.cartItemsArr[sender.tag].cartId!]
+            AlamofireManager.sharedInstance.postRequest(apiname: apiName, params: param, vc: self) { (response, error) in
+                SVProgressHUD.dismiss()
+                if let error = error{
+                    Utils.showAlert(alert: "", message: error.localizedDescription, vc: self)
+                }else{
+                    if let response = response{
+                        if response["responseCode"] as! Int == 1{
+                            Utils.showAlertWithCallbackOneAction(alert: "", message: response["responseText"] as! String, vc: self) {
+                                self.getCartItems()
+                            }
+                        }else{
+                            Utils.showAlert(alert: "", message: response["responseText"] as! String, vc: self)
+                        }
+                    }
+                }
+            }
         }
     }
 }

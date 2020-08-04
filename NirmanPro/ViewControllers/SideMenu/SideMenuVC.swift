@@ -85,6 +85,10 @@ extension SideMenuVC: UITableViewDelegate,UITableViewDataSource{
         let homeVC = STORYBOARD.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
         
         let item = mainArr[indexPath.row]
+        if item == "Category"{
+            drawerController.setDrawerState(.closed, animated: true)
+            passTheDestinationController(identifier: "CategoryViewController")
+        }
         if item == "Orders"{
             drawerController.setDrawerState(.closed, animated: true)
             passTheDestinationController(identifier: "MyOrdersViewController")

@@ -77,6 +77,11 @@ extension WishlistViewController: UICollectionViewDataSource,UICollectionViewDel
         let height = 305
         return CGSize(width: CGFloat(width), height: CGFloat(height))
     }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let productVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ProductDetailsViewController") as! ProductDetailsViewController
+        productVC.productID = wishlistArr[indexPath.row].productID
+        self.navigationController?.pushViewController(productVC, animated: true)
+    }
 }
 //MARK:- Api Call
 extension WishlistViewController{
