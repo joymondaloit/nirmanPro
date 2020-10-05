@@ -18,8 +18,8 @@ class SideMenuVC: UIViewController {
        var navController: UINavigationController? = nil
     var mainArr = [String]()
     var mainImgArr = [String]()
-    let itemArrWithID = ["Home","Category","Orders","Wishlist","Profile","Address","About Us","Customer Service","Contact Us","Terms and Conditions","Privacy Policy","Logout"]
-    let imgArrWithID = ["home","category","orders","wishlist","profile","gps","aboutUs","headphones","contactUs","term","privacy-policy","logout"]
+    let itemArrWithID = ["Home","Category","Orders","Wishlist","Return Items","Profile","Address","About Us","Customer Service","Contact Us","Terms and Conditions","Privacy Policy","Logout"]
+    let imgArrWithID = ["home","category","orders","wishlist","return","profile","gps","aboutUs","headphones","contactUs","term","privacy-policy","logout"]
     var intialTitleArr = ["Home","Category","Login/Sign Up","About Us","Customer Service","Contact Us","Terms and Conditions","Privacy Policy"]
     var initialImgArr = ["home","category","logout","aboutUs","headphones","contactUs","term","privacy-policy"]
     
@@ -97,10 +97,40 @@ extension SideMenuVC: UITableViewDelegate,UITableViewDataSource{
             drawerController.setDrawerState(.closed, animated: true)
             passTheDestinationController(identifier: "ProfileViewController")
         }
+        else if item == "Address"{
+            drawerController.setDrawerState(.closed, animated: true)
+            passTheDestinationController(identifier: "AddressListViewController")
+        }
         else if item == "Wishlist"{
             drawerController.setDrawerState(.closed, animated: true)
             passTheDestinationController(identifier: "WishlistViewController")
             
+        }
+        else if item == "Return Items"{
+            drawerController.setDrawerState(.closed, animated: true)
+            passTheDestinationController(identifier: "ReturnListViewController")
+            
+        }
+        else if item == "About Us"  {
+            staticPageName = "aboutUs"
+            drawerController.setDrawerState(.closed, animated: true)
+            passTheDestinationController(identifier: "StaticPageViewController")
+            
+        }
+        else if item == "Terms and Conditions" {
+            staticPageName = "terms"
+            drawerController.setDrawerState(.closed, animated: true)
+            passTheDestinationController(identifier: "StaticPageViewController")
+        }
+        else if item  == "Privacy Policy"{
+            staticPageName = "privacyPolicy"
+            drawerController.setDrawerState(.closed, animated: true)
+            passTheDestinationController(identifier: "StaticPageViewController")
+        }
+        else if  item == "Contact Us"{
+            staticPageName = "contactUs"
+            drawerController.setDrawerState(.closed, animated: true)
+            passTheDestinationController(identifier: "StaticPageViewController")
         }
         else if item == "Login/Sign Up"{
            navController = UINavigationController(rootViewController: loginVC)

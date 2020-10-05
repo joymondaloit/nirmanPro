@@ -97,7 +97,7 @@ extension SignUpViewController{
                                      "email":emailTF.text!,
                                      "password":passwordTF.text!,
                                      "mobile":phoneNumberTF.text!,
-                                     "newsletter":"true"]
+                                     "newsletter":"true","device_type":"I","device_token" : Utils.getFcmToken()]
         SignUpViewModel.shared.SignUp(apiName: apiName, param: param, vc: self) { (response, error) in
             if let error = error{
                 SVProgressHUD.dismiss()

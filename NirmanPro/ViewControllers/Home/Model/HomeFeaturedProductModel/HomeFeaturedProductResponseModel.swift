@@ -11,7 +11,7 @@ class HomeFeaturedProductResponseModel : NSObject, NSCoding, Mappable{
 	var responseCode : Int?
 	var responseData : [HomeFeaturedProductResponseData]?
 	var responseText : String?
-
+    var notificationCount : String?
 
 	class func newInstance(map: Map) -> Mappable?{
 		return HomeFeaturedProductResponseModel()
@@ -24,7 +24,7 @@ class HomeFeaturedProductResponseModel : NSObject, NSCoding, Mappable{
 		responseCode <- map["responseCode"]
 		responseData <- map["responseData"]
 		responseText <- map["responseText"]
-		
+		notificationCount <- map["notificationCount"]
 	}
 
     /**
@@ -36,7 +36,7 @@ class HomeFeaturedProductResponseModel : NSObject, NSCoding, Mappable{
          responseCode = aDecoder.decodeObject(forKey: "responseCode") as? Int
          responseData = aDecoder.decodeObject(forKey: "responseData") as? [HomeFeaturedProductResponseData]
          responseText = aDecoder.decodeObject(forKey: "responseText") as? String
-
+        notificationCount = aDecoder.decodeObject(forKey: "notificationCount") as? String
 	}
 
     /**
@@ -54,6 +54,9 @@ class HomeFeaturedProductResponseModel : NSObject, NSCoding, Mappable{
 		if responseText != nil{
 			aCoder.encode(responseText, forKey: "responseText")
 		}
+        if notificationCount != nil{
+            aCoder.encode(notificationCount, forKey: "notificationCount")
+        }
 
 	}
 

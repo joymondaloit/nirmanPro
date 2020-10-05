@@ -9,7 +9,9 @@ import ObjectMapper
 class CartItemsResponseData : NSObject, NSCoding, Mappable{
 
 	var cartId : String?
+	var color : [CartItemsColor]?
 	var productDescription : String?
+	var productId : String?
 	var productImage : String?
 	var productName : String?
 	var productPrice : String?
@@ -26,7 +28,9 @@ class CartItemsResponseData : NSObject, NSCoding, Mappable{
 	func mapping(map: Map)
 	{
 		cartId <- map["cart_id"]
+		color <- map["color"]
 		productDescription <- map["product_description"]
+		productId <- map["product_id"]
 		productImage <- map["product_image"]
 		productName <- map["product_name"]
 		productPrice <- map["product_price"]
@@ -42,7 +46,9 @@ class CartItemsResponseData : NSObject, NSCoding, Mappable{
     @objc required init(coder aDecoder: NSCoder)
 	{
          cartId = aDecoder.decodeObject(forKey: "cart_id") as? String
+         color = aDecoder.decodeObject(forKey: "color") as? [CartItemsColor]
          productDescription = aDecoder.decodeObject(forKey: "product_description") as? String
+         productId = aDecoder.decodeObject(forKey: "product_id") as? String
          productImage = aDecoder.decodeObject(forKey: "product_image") as? String
          productName = aDecoder.decodeObject(forKey: "product_name") as? String
          productPrice = aDecoder.decodeObject(forKey: "product_price") as? String
@@ -60,8 +66,14 @@ class CartItemsResponseData : NSObject, NSCoding, Mappable{
 		if cartId != nil{
 			aCoder.encode(cartId, forKey: "cart_id")
 		}
+		if color != nil{
+			aCoder.encode(color, forKey: "color")
+		}
 		if productDescription != nil{
 			aCoder.encode(productDescription, forKey: "product_description")
+		}
+		if productId != nil{
+			aCoder.encode(productId, forKey: "product_id")
 		}
 		if productImage != nil{
 			aCoder.encode(productImage, forKey: "product_image")

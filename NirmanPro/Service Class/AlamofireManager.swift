@@ -131,9 +131,9 @@ class AlamofireManager: NSObject {
             }
     }
     func getImageData(image : UIImage) -> Data {
-         
-               // Do whatever you want with the image
-               return (image.jpegData(compressionQuality: 0.5))!
-           
-       }
+        
+        // Do whatever you want with the image
+        return (image.jpegData(compressionQuality: 0.5))!
+        
+    }
 }

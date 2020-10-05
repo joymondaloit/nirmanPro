@@ -66,7 +66,6 @@ class Utils: NSObject {
          appDelegate.window?.rootViewController = drawerController
          drawerController.setDrawerState(.closed, animated: true)
      }
-     
      class func gotoSelectedTabVC(_ identifier:String){
          let mainVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: identifier)
          let mainNav = UINavigationController(rootViewController: mainVC)
@@ -120,5 +119,32 @@ class Utils: NSObject {
         imageView.sd_setImage(with: URL(string: imageURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!), placeholderImage: UIImage.init(named: placeHolderImage), options: .refreshCached) { (image, error, catcheType, imgURL) in
             completion(image,error,catcheType,imgURL)
         }
+    }
+    class func getFcmToken() -> String{
+        if let token = UserDefaults.standard.value(forKey: FCM_KEY) as? String{
+            return token
+        }
+        return ""
+    }
+    class func hexStringToUIColor (hex:String) -> UIColor {
+        var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+
+        if (cString.hasPrefix("#")) {
+            cString.remove(at: cString.startIndex)
+        }
+
+        if ((cString.count) != 6) {
+            return UIColor.gray
+        }
+
+        var rgbValue:UInt64 = 0
+        Scanner(string: cString).scanHexInt64(&rgbValue)
+
+        return UIColor(
+            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+            alpha: CGFloat(1.0)
+        )
     }
 }

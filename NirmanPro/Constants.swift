@@ -29,3 +29,4 @@ var IMAGE_BASE_URL = ""
 var PlaceHolderImg = "smallImgPlaceholder"
 //Storyboard Reference
 let STORYBOARD = UIStoryboard.init(name: "Main", bundle: nil)
+let FCM_KEY = "fcmKey"

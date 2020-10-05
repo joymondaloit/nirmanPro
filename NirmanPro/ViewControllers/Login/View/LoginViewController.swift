@@ -41,13 +41,17 @@ class LoginViewController: UIViewController {
         self.navigationController?.pushViewController(signUpVC, animated: true)
         
     }
+    @IBAction func forgotPasswordBtnAction(_ sender: Any) {
+        let forgotVC = STORYBOARD.instantiateViewController(withIdentifier: "ForgotPasswordViewController") as! ForgotPasswordViewController
+        self.navigationController?.pushViewController(forgotVC, animated: true)
+    }
 }
 //MARK:- API Call:-
 extension LoginViewController{
     func login(){
         SVProgressHUD.show()
         let apiname = DEV_BASE_URL+"login/login_attempt"
-        let param :[String:Any] = ["email" : emailTF.text!,"password" : passwordTF.text!]
+        let param :[String:Any] = ["email" : emailTF.text!,"password" : passwordTF.text!,"device_type":"I","device_token" : Utils.getFcmToken()]
         LoginViewModel.shared.Login(apiName: apiname, param: param, vc: self) { (response, error) in
             if let error = error{
                 SVProgressHUD.dismiss()

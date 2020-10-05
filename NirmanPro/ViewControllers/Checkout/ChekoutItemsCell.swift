@@ -18,6 +18,9 @@ class ChekoutItemsCell: UITableViewCell {
     @IBOutlet weak var deleteItemBtn : UIButton!
     @IBOutlet weak var minusItemBtn : UIButton!
     @IBOutlet weak var plusItemBtn : UIButton!
+    @IBOutlet weak var colorView : UIView!
+       @IBOutlet weak var colorViewHeight : NSLayoutConstraint!
+       @IBOutlet weak var colorLbl : UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

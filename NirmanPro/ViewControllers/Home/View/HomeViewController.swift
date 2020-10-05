@@ -10,8 +10,10 @@ import UIKit
 import SVProgressHUD
 import SDWebImage
 import DropDown
+var staticPageName = String()
 class HomeViewController: UIViewController {
     
+    @IBOutlet weak var searchTF: UITextField!
     @IBOutlet weak var specialBannerLbl3: UILabel!
     @IBOutlet weak var specialBannerLbl2: UILabel!
     @IBOutlet weak var specialBannerLbl1: UILabel!
@@ -40,10 +42,12 @@ class HomeViewController: UIViewController {
     var isCarouselLabelAnim = true
     var commingFromFeatureList : Bool?
     var customerID : String?
+    var categoryID = ""
+    var categoryName = ""
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = true
-        self.notificationCountLbl.layer.cornerRadius = 9.0
+        self.notificationCountLbl.layer.cornerRadius = 10.0
         self.cartCountLbl.layer.cornerRadius = 9.0
         if Utils.getUserID() == ""{
             customerID = "0"
@@ -51,18 +55,51 @@ class HomeViewController: UIViewController {
             customerID = Utils.getUserID()
         }
         NotificationCenter.default.addObserver(self, selector: #selector(goToSelectedVC), name: Notification.Name(GoToVCNotificationKey), object: nil)
-       
+        if commingFromNotification {
+            goToOrderDetails()
+        }
         
       
         //Go to Selected Vc from Side Menu:-
         
         // Do any additional setup after loading the view.
     }
+    
+    func goToOrderDetails(){
+        commingFromNotification = false
+        let ordersVC = STORYBOARD.instantiateViewController(withIdentifier: "MyOrdersViewController") as! MyOrdersViewController
+        self.navigationController?.pushViewController(ordersVC, animated: false)
+        let orderDetailsVC = STORYBOARD.instantiateViewController(withIdentifier: "OrderDetailsViewController") as! OrderDetailsViewController
+        orderDetailsVC.orderID = ORDER_ID
+        self.navigationController?.pushViewController(orderDetailsVC, animated: false)
+    }
     @objc func goToSelectedVC(notification : Notification){
         if let controller = notification.userInfo?["controller"] as? UIViewController{
             if self.isViewLoaded && (self.view.window != nil)
             {
-                self.navigationController?.pushViewController(controller, animated: true)
+                if controller.isKind(of: StaticPageViewController.self){
+                    let con = controller as! StaticPageViewController
+                    if staticPageName == "terms"{
+                        con.headerTitle = "Terms And Condition"
+                        con.pageID = 5
+                    }
+                    else if staticPageName == "aboutUs"{
+                        con.headerTitle = "About Us"
+                        con.pageID = 4
+                    }
+                    else if staticPageName == "privacyPolicy"{
+                        con.headerTitle = "Privacy Policy"
+                        con.pageID = 3
+                    }
+                    else if staticPageName == "contactUs"{
+                        con.headerTitle = "Contact Us"
+                        con.pageID = 7
+                    }
+                     self.navigationController?.pushViewController(con, animated: true)
+                }else{
+                  self.navigationController?.pushViewController(controller, animated: true)
+                }
+                
                 // NotificationCenter.default.removeObserver(self, name: Notification.Name(GoToVCNotificationKey), object: nil)
             }
         }
@@ -104,17 +141,34 @@ class HomeViewController: UIViewController {
         drawerController.setDrawerState(.opened,animated: true)
     }
     
+    @IBAction func searchAction(_ sender: Any) {
+        let trimmedTF = searchTF.text!.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmedTF.count > 0{
+            let searchVC = STORYBOARD.instantiateViewController(withIdentifier: "SearchViewController") as! SearchViewController
+            searchVC.categoryID = self.categoryID
+            searchVC.searchText = self.searchTF.text!
+            searchVC.categoryName = self.categoryName
+            self.navigationController?.pushViewController(searchVC, animated: true)
+        }else{
+            Utils.showAlert(alert: "", message: "Please enter some character for search", vc: self)
+        }
+        
+    }
     @IBAction func goToCartAction(_ sender: Any) {
         let cartVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MyCartViewController") as! MyCartViewController
         self.navigationController?.pushViewController(cartVC, animated: true)
     }
     
     @IBAction func goToNotificationAction(_ sender: Any) {
+        let notificationVC = STORYBOARD.instantiateViewController(withIdentifier: "NotificationViewController") as! NotificationViewController
+        self.navigationController?.pushViewController(notificationVC, animated: true)
     }
     
     @IBAction func categoryDropdown(_ sender: Any) {
         self.showDropDownWithCallback(itemArr: self.categoryNameArr, anchorView: self.categoryDropdownView) { (item,index)  in
             self.categoryLbl.text! = self.categoryListArr[index!].name!
+            self.categoryID = self.categoryListArr[index!].id!
+            self.categoryName = self.categoryListArr[index!].name!
         }
     }
     /***
@@ -164,7 +218,7 @@ class HomeViewController: UIViewController {
     @objc func newProductAddToCartAction(sender : UIButton){
         if Utils.getUserID() != ""{
             Utils.showAlertWithCallback(alert: "", message: "Are you sure want to cart this item?", vc: self) {
-                guard let productID = self.featuredProductList[sender.tag].productId else {return}
+                guard let productID = self.newProductListArr[sender.tag].productId else {return}
                 self.addToCart(productID: productID)
             }
         }else{
@@ -188,7 +242,7 @@ class HomeViewController: UIViewController {
                 message = "Are you sure want to wishlist this item?"
             }
             Utils.showAlertWithCallback(alert: "", message: message, vc: self) {
-                guard let productID = self.featuredProductList[sender.tag].productId else {return}
+                guard let productID = self.newProductListArr[sender.tag].productId else {return}
                 self.addToWishlist(productID: productID)
             }
         }else{
@@ -266,7 +320,7 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
                 caraoselCell.textLbl.text! = carouselCollectionArr[indexPath.row].title!
                 caraoselCell.textLbl1.text! = carouselCollectionArr[indexPath.row].descriptionField!
                 if let imgUrl = carouselCollectionArr[indexPath.row].image{
-                    caraoselCell.image.sd_setImage(with: URL(string: imgUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!), placeholderImage: UIImage.init(named: "userPlaceholderImg"), options: .refreshCached) { (image, error, catcheType, imgURL) in
+                    caraoselCell.image.sd_setImage(with: URL(string: imgUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!), placeholderImage: UIImage.init(named: PlaceHolderImg), options: .refreshCached) { (image, error, catcheType, imgURL) in
                         
                     }
                 }
@@ -297,7 +351,7 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
             let data = featuredProductList[indexPath.row]
             let featuredCell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeFeaturedProductCell", for: indexPath) as! HomeFeaturedProductCell
             if let imgUrl = featuredProductList[indexPath.row].productImage{
-                featuredCell.productImg.sd_setImage(with: URL(string: imgUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!), placeholderImage: UIImage.init(named: "userPlaceholderImg"), options: .refreshCached) { (image, error, catcheType, imgURL) in
+                featuredCell.productImg.sd_setImage(with: URL(string: imgUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!), placeholderImage: UIImage.init(named: PlaceHolderImg), options: .refreshCached) { (image, error, catcheType, imgURL) in
                     
                 }
             }
@@ -306,7 +360,7 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
                 
             }
             if let rating = data.productRating{
-                featuredCell.rating.rating = Double(rating)
+                featuredCell.rating.rating = Double(rating)!
             }
             if let specialPrice = data.productSpecialPrice{
                 if specialPrice != ""{
@@ -342,7 +396,7 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
             
             let newProductsCell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeNewProductCell", for: indexPath) as! HomeNewProductCell
             if let imgUrl = data.productImage{
-                newProductsCell.productImg.sd_setImage(with: URL(string: imgUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!), placeholderImage: UIImage.init(named: "userPlaceholderImg"), options: .refreshCached) { (image, error, catcheType, imgURL) in
+                newProductsCell.productImg.sd_setImage(with: URL(string: imgUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!), placeholderImage: UIImage.init(named: PlaceHolderImg), options: .refreshCached) { (image, error, catcheType, imgURL) in
                     
                 }
             }
@@ -351,7 +405,7 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
                 
             }
             if let rating = data.productRating{
-                newProductsCell.rating.rating = Double(rating)
+                newProductsCell.rating.rating = Double(rating)!
             }
             if let specialPrice = data.productSpecialPrice{
                 if specialPrice != ""{
@@ -386,7 +440,7 @@ extension HomeViewController : UICollectionViewDelegate, UICollectionViewDataSou
             let brandsCell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeBrandCell", for: indexPath) as! HomeBrandCell
             
             if let imgUrl = brandListArr[indexPath.row].image{
-                brandsCell.brandImg.sd_setImage(with: URL(string: imgUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!), placeholderImage: UIImage.init(named: "userPlaceholderImg"), options: .refreshCached) { (image, error, catcheType, imgURL) in
+                brandsCell.brandImg.sd_setImage(with: URL(string: imgUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!), placeholderImage: UIImage.init(named: PlaceHolderImg), options: .refreshCached) { (image, error, catcheType, imgURL) in
                     
                 }
             }
@@ -518,6 +572,9 @@ extension HomeViewController {
             }else{
                 if let response = response{
                     if response.responseCode == 1{
+                        if let notiCount = response.notificationCount{
+                            self.notificationCountLbl.text = notiCount
+                        }
                         if response.responseData!.count > 0{
                             self.featuredProductList = response.responseData!
                             self.featuredProductCollectionView.reloadData()
@@ -607,19 +664,19 @@ extension HomeViewController {
     }
     func showSpecialBannerData(data : [SpecialBannerResponseData]){
         if let bannerImg1 = data[0].image{
-            self.specialBannerImg1.sd_setImage(with: URL(string: bannerImg1.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!), placeholderImage: UIImage.init(named: "userPlaceholderImg"), options: .refreshCached) { (image, error, catcheType, imgURL) in
+            self.specialBannerImg1.sd_setImage(with: URL(string: bannerImg1.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!), placeholderImage: UIImage.init(named: PlaceHolderImg), options: .refreshCached) { (image, error, catcheType, imgURL) in
                 
             }
             
         }
         if let bannerImg2 = data[1].image{
-            self.specialBannerImg2.sd_setImage(with: URL(string: bannerImg2.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!), placeholderImage: UIImage.init(named: "userPlaceholderImg"), options: .refreshCached) { (image, error, catcheType, imgURL) in
+            self.specialBannerImg2.sd_setImage(with: URL(string: bannerImg2.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!), placeholderImage: UIImage.init(named: PlaceHolderImg), options: .refreshCached) { (image, error, catcheType, imgURL) in
                 
             }
             
         }
         if let bannerImg3 = data[2].image{
-            self.specialBannerImg3.sd_setImage(with: URL(string: bannerImg3.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!), placeholderImage: UIImage.init(named: "userPlaceholderImg"), options: .refreshCached) { (image, error, catcheType, imgURL) in
+            self.specialBannerImg3.sd_setImage(with: URL(string: bannerImg3.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!), placeholderImage: UIImage.init(named: PlaceHolderImg), options: .refreshCached) { (image, error, catcheType, imgURL) in
                 
             }
             
@@ -655,7 +712,7 @@ extension HomeViewController {
     func addToCart(productID : String){
         SVProgressHUD.show()
         let apiName = DEV_BASE_URL+"cart/add_to_cart"
-        let param :[String:Any] = ["usreId":Utils.getUserID(),"productid" :productID,"quantity":1,"action_type" : 1]
+        let param :[String:Any] = ["usreId":Utils.getUserID(),"productid" :productID,"quantity":1,"action_type" : 1,"product_option_value_id" : "0"]
         AlamofireManager.sharedInstance.postRequest(apiname: apiName, params: param, vc: self) { (response, error) in
             SVProgressHUD.dismiss()
             if let error = error{
@@ -676,9 +733,15 @@ extension HomeViewController {
     }
     
     func getCartItems(){
+        var userID = ""
+        if Utils.getUserID() == ""{
+            userID = "0"
+        }else{
+            userID = Utils.getUserID()
+        }
         SVProgressHUD.show()
         let apiName = DEV_BASE_URL+"cart/cart_list"
-        let param : [String:Any] = ["usreId" : Utils.getUserID()]
+        let param : [String:Any] = ["usreId" : userID]
         MyCartViewModel.shared.getCartList(apiName: apiName, param: param, vc: self) { (response, error) in
             SVProgressHUD.dismiss()
             if let error = error{
@@ -695,7 +758,7 @@ extension HomeViewController {
                             }
                         }
                     }else{
-                        Utils.showAlert(alert: "", message: response.responseText!, vc: self)
+                       // Utils.showAlert(alert: "", message: response.responseText!, vc: self)
                     }
                 }
             }

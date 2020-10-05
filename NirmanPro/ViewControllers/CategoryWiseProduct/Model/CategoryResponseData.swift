@@ -12,10 +12,10 @@ class CategoryResponseData : NSObject, NSCoding, Mappable{
 	var productImage : String?
 	var productName : String?
 	var productPrice : String?
-	var productRating : Int?
+	var productRating : String?
 	var productSpecialPrice : String?
 	var productWishlist : Int?
-
+    var isWishList: Int?
 
 	class func newInstance(map: Map) -> Mappable?{
 		return CategoryResponseData()
@@ -32,7 +32,7 @@ class CategoryResponseData : NSObject, NSCoding, Mappable{
 		productRating <- map["product_rating"]
 		productSpecialPrice <- map["product_special_price"]
 		productWishlist <- map["product_wishlist"]
-		
+		isWishList <- map["is_wishlist"]
 	}
 
     /**
@@ -45,9 +45,10 @@ class CategoryResponseData : NSObject, NSCoding, Mappable{
          productImage = aDecoder.decodeObject(forKey: "product_image") as? String
          productName = aDecoder.decodeObject(forKey: "product_name") as? String
          productPrice = aDecoder.decodeObject(forKey: "product_price") as? String
-         productRating = aDecoder.decodeObject(forKey: "product_rating") as? Int
+         productRating = aDecoder.decodeObject(forKey: "product_rating") as? String
          productSpecialPrice = aDecoder.decodeObject(forKey: "product_special_price") as? String
          productWishlist = aDecoder.decodeObject(forKey: "product_wishlist") as? Int
+        isWishList = aDecoder.decodeObject(forKey: "is_wishlist") as? Int
 
 	}
 
@@ -78,6 +79,9 @@ class CategoryResponseData : NSObject, NSCoding, Mappable{
 		if productWishlist != nil{
 			aCoder.encode(productWishlist, forKey: "product_wishlist")
 		}
+        if isWishList != nil{
+            aCoder.encode(isWishList, forKey: "is_wishlist")
+        }
 
 	}
 

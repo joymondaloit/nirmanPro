@@ -10,4 +10,9 @@ import UIKit
 
 class ProductImgesCell: UICollectionViewCell {
     @IBOutlet weak var productImg : UIImageView!
+    override func awakeFromNib() {
+          super.awakeFromNib()
+          // Initialization code
+          self.productImg.layer.cornerRadius = 10
+      }
 }

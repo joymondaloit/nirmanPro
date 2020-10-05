@@ -50,10 +50,24 @@ extension CategoryViewController : UICollectionViewDataSource,UICollectionViewDe
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let categoryVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "CategoryWiseProductViewController") as! CategoryWiseProductViewController
-        categoryVC.categoryID = categoryArr[indexPath.row].id
-        categoryVC.categoryName = categoryArr[indexPath.row].name!
-        self.navigationController?.pushViewController(categoryVC, animated: true)
+        if let isSubcategory = categoryArr[indexPath.row].isSubcategory{
+            if isSubcategory == 1{
+                let subCategoryVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SubCategoryViewController") as! SubCategoryViewController
+                subCategoryVC.categoryID = categoryArr[indexPath.row].id
+                self.navigationController?.pushViewController(subCategoryVC, animated: true)
+            }else{
+                let categoryVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "CategoryWiseProductViewController") as! CategoryWiseProductViewController
+                categoryVC.categoryID = categoryArr[indexPath.row].id
+                categoryVC.categoryName = categoryArr[indexPath.row].name!
+                self.navigationController?.pushViewController(categoryVC, animated: true)
+            }
+        }else{
+            let categoryVC = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "CategoryWiseProductViewController") as! CategoryWiseProductViewController
+            categoryVC.categoryID = categoryArr[indexPath.row].id
+            categoryVC.categoryName = categoryArr[indexPath.row].name!
+            self.navigationController?.pushViewController(categoryVC, animated: true)
+        }
+     
     }
 }
 

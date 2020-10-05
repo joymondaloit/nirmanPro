@@ -49,7 +49,7 @@ class CategoryWiseProductCell: UICollectionViewCell {
                }
            }
            if let rating = categoryData?.productRating{
-            self.rating.rating = Double(rating)
+            self.rating.rating = Double(rating)!
            }
         if let isProductWishlisted = categoryData!.productWishlist{
             if isProductWishlisted == 1{

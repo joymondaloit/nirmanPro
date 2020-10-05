@@ -12,7 +12,7 @@ class HomeCategoryResponseData : NSObject, NSCoding, Mappable{
 	var id : String?
 	var image : String?
 	var name : String?
-
+    var isSubcategory : Int?
 
 	class func newInstance(map: Map) -> Mappable?{
 		return HomeCategoryResponseData()
@@ -26,7 +26,7 @@ class HomeCategoryResponseData : NSObject, NSCoding, Mappable{
 		id <- map["id"]
 		image <- map["image"]
 		name <- map["name"]
-		
+		isSubcategory <- map["is_subcategory"]
 	}
 
     /**
@@ -39,7 +39,7 @@ class HomeCategoryResponseData : NSObject, NSCoding, Mappable{
          id = aDecoder.decodeObject(forKey: "id") as? String
          image = aDecoder.decodeObject(forKey: "image") as? String
          name = aDecoder.decodeObject(forKey: "name") as? String
-
+         isSubcategory = aDecoder.decodeObject(forKey: "is_subcategory") as? Int
 	}
 
     /**
@@ -60,6 +60,9 @@ class HomeCategoryResponseData : NSObject, NSCoding, Mappable{
 		if name != nil{
 			aCoder.encode(name, forKey: "name")
 		}
+        if isSubcategory != nil{
+            aCoder.encode(isSubcategory, forKey: "is_subcategory")
+        }
 
 	}
 

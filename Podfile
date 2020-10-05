@@ -16,5 +16,8 @@ target 'NirmanPro' do
   pod 'SVProgressHUD'
   pod 'IQKeyboardManagerSwift'
   pod 'SwiftyJSON'
-
+  pod 'CountryPickerView'
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Core'
+  pod 'Firebase/Messaging'
 end

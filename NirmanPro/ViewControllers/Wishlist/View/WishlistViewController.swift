@@ -114,7 +114,7 @@ extension WishlistViewController{
     func addToCart(productID : String){
         SVProgressHUD.show()
         let apiName = DEV_BASE_URL+"cart/add_to_cart"
-        let param :[String:Any] = ["usreId":Utils.getUserID(),"productid" :productID,"quantity":1,"action_type" : 1]
+        let param :[String:Any] = ["usreId":Utils.getUserID(),"productid" :productID,"quantity":1,"action_type" : 1,"product_option_value_id" : "0"]
         AlamofireManager.sharedInstance.postRequest(apiname: apiName, params: param, vc: self) { (response, error) in
             SVProgressHUD.dismiss()
             if let error = error{
